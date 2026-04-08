@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')).render(
 // Register service worker with auto-update
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/plan-fitness/sw.js').then(reg => {
+    navigator.serviceWorker.register('/health/sw.js').then(reg => {
       // Check for updates every 60 seconds
       setInterval(() => reg.update(), 60 * 1000);
 
