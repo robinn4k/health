@@ -4,6 +4,7 @@ import WorkoutTab from './components/WorkoutTab';
 
 const STORAGE_KEY = 'plan_fitness_v1';
 const WORKOUT_LOG_KEY = 'workout_log';
+const NOTES_KEY = 'plan_fitness_notes';
 
 function getToday() {
   return new Date().toDateString();
@@ -40,6 +41,20 @@ function saveWorkoutLog(log) {
   } catch {}
 }
 
+function loadNotes() {
+  try {
+    const raw = localStorage.getItem(NOTES_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+}
+
+function saveNotes(notes) {
+  try {
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  } catch {}
+}
+
 export function getLastWeight(log, dayId, exerciseN) {
   const dates = Object.keys(log).sort().reverse();
   for (const date of dates) {
@@ -60,6 +75,7 @@ export default function App() {
   const [openCards, setOpenCards] = useState([]);
   const [activeDay, setActiveDay] = useState('push');
   const [workoutLog, setWorkoutLog] = useState({});
+  const [notes, setNotes] = useState({});
 
   // Load on mount
   useEffect(() => {
@@ -71,6 +87,7 @@ export default function App() {
       setActiveDay(saved.activeDay ?? 'push');
     }
     setWorkoutLog(loadWorkoutLog());
+    setNotes(loadNotes());
   }, []);
 
   // Save daily state on change
@@ -85,6 +102,13 @@ export default function App() {
     }
   }, [workoutLog]);
 
+  // Save notes on change
+  useEffect(() => {
+    if (Object.keys(notes).length > 0) {
+      saveNotes(notes);
+    }
+  }, [notes]);
+
   function handleReset() {
     setIsTraining(true);
     setSelectedSnacks([]);
@@ -98,6 +122,17 @@ export default function App() {
       const next = { ...prev };
       delete next[today];
       return next;
+    });
+  }
+
+  function updateNote(key, text) {
+    setNotes(prev => {
+      if (!text.trim()) {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      }
+      return { ...prev, [key]: text };
     });
   }
 
@@ -127,6 +162,8 @@ export default function App() {
             setSelectedSnacks={setSelectedSnacks}
             openCards={openCards}
             setOpenCards={setOpenCards}
+            notes={notes}
+            updateNote={updateNote}
             onReset={handleReset}
           />
         ) : (
@@ -136,6 +173,8 @@ export default function App() {
             workoutLog={workoutLog}
             todaySets={workoutLog[getToday()]?.exercises || {}}
             updateExerciseSets={updateExerciseSets}
+            notes={notes}
+            updateNote={updateNote}
             onReset={handleWorkoutReset}
           />
         )}

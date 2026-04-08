@@ -8,6 +8,7 @@ export default function NutritionTab({
   isTraining, setIsTraining,
   selectedSnacks, setSelectedSnacks,
   openCards, setOpenCards,
+  notes, updateNote,
   onReset,
 }) {
   const macros = isTraining ? MACROS_TRAIN : MACROS_REST;
@@ -26,24 +27,18 @@ export default function NutritionTab({
           className="absolute bottom-0 left-5 right-5 h-px"
           style={{ background: 'linear-gradient(90deg, transparent, var(--border-gold), transparent)' }}
         />
-        <p
-          className="font-mono text-[10px] font-semibold tracking-[4px] uppercase animate-slide-up"
-          style={{ color: 'var(--gold)', animationDelay: '0.1s' }}
-        >
-          Volumen Limpio
-        </p>
         <h1
-          className="font-display text-[34px] font-extrabold leading-tight mt-1 animate-slide-up"
+          className="font-display text-[28px] font-extrabold leading-tight animate-slide-up"
           style={{
             background: 'linear-gradient(135deg, var(--text) 40%, var(--gold) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            animationDelay: '0.2s',
+            animationDelay: '0.1s',
           }}
         >
-          Plan Nutricional
+          Entrenamiento personalizado
         </h1>
-        <div className="flex gap-2 mt-3 flex-wrap animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="flex gap-2 mt-3 flex-wrap animate-slide-up" style={{ animationDelay: '0.2s' }}>
           {['77 kg', 'Prot 2.2 g/kg', '4–5 días/sem'].map(t => (
             <span
               key={t}
@@ -81,6 +76,8 @@ export default function NutritionTab({
                 setSelectedSnacks={setSelectedSnacks}
                 isOpen={openCards.includes(meal.id)}
                 onToggle={() => toggleCard(meal.id)}
+                note={notes[`meal_${meal.id}`] || ''}
+                onNoteChange={(text) => updateNote(`meal_${meal.id}`, text)}
                 index={i}
               />
             );
@@ -92,6 +89,8 @@ export default function NutritionTab({
               isTraining={isTraining}
               isOpen={openCards.includes(meal.id)}
               onToggle={() => toggleCard(meal.id)}
+              note={notes[`meal_${meal.id}`] || ''}
+              onNoteChange={(text) => updateNote(`meal_${meal.id}`, text)}
               index={i}
             />
           );
@@ -101,7 +100,7 @@ export default function NutritionTab({
       {/* Claves */}
       <div className="px-3 mt-5">
         <div
-          className="rounded-2xl border p-5"
+          className="rounded-2xl border p-5 relative"
           style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
         >
           <div
@@ -112,7 +111,7 @@ export default function NutritionTab({
             className="font-mono text-[10px] font-bold tracking-[4px] uppercase mb-4"
             style={{ color: 'var(--gold)' }}
           >
-            ☑ Claves
+            📌 Claves
           </h3>
           {claves.map(c => (
             <div key={c.n} className="flex gap-2.5 py-2 border-b last:border-b-0" style={{ borderColor: 'var(--border)' }}>
