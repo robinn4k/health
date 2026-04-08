@@ -188,7 +188,7 @@ export default function ExerciseCard({ exercise, palette, index, sets, onUpdateS
                     color: s.done ? 'var(--green)' : 'var(--text3)',
                   }}
                 >
-                  <span className="text-base">{s.done ? '✓' : ''}</span>
+                  <span className="text-base">{s.done ? '✓' : '○'}</span>
                 </button>
               </div>
             ))}

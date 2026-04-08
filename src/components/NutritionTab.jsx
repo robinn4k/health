@@ -101,7 +101,7 @@ export default function NutritionTab({
       {/* Claves */}
       <div className="px-3 mt-5">
         <div
-          className="rounded-2xl border p-5"
+          className="rounded-2xl border p-5 relative"
           style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
         >
           <div

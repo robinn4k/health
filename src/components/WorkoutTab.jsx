@@ -2,8 +2,8 @@ import { workoutDays } from '../data/workout';
 import ExerciseCard from './ExerciseCard';
 
 const dayColors = {
-  gold: { accent: 'var(--gold)', bg: 'var(--gold-dim)', glow: 'var(--gold-glow)', border: 'var(--border-gold)' },
-  cyan: { accent: 'var(--cyan)', bg: 'var(--cyan-bg)', glow: 'rgba(34,211,238,0.06)', border: 'rgba(34,211,238,0.2)' },
+  gold: { accent: 'var(--gold)', titleAccent: 'var(--gold)', bg: 'var(--gold-dim)', glow: 'var(--gold-glow)', border: 'var(--border-gold)' },
+  cyan: { accent: 'var(--cyan)', titleAccent: '#7ECFDB', bg: 'var(--cyan-bg)', glow: 'rgba(34,211,238,0.06)', border: 'rgba(34,211,238,0.2)' },
 };
 
 export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, updateExerciseSets, onReset }) {
@@ -24,17 +24,18 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
           style={{ background: `linear-gradient(90deg, transparent, ${palette.accent}, transparent)` }}
         />
         <p
-          className="font-mono text-[10px] font-semibold tracking-[4px] uppercase"
-          style={{ color: palette.accent }}
+          className="font-mono text-[10px] font-semibold tracking-[4px] uppercase animate-slide-up"
+          style={{ color: palette.accent, animationDelay: '0.1s' }}
         >
           Push & Pull
         </p>
         <h1
-          className="font-display text-[34px] font-extrabold leading-tight mt-1"
+          className="font-display text-[34px] font-extrabold leading-tight mt-1 animate-slide-up"
           style={{
-            background: `linear-gradient(135deg, var(--text) 40%, ${palette.accent} 100%)`,
+            background: `linear-gradient(135deg, var(--text) 60%, ${palette.titleAccent} 140%)`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            animationDelay: '0.2s',
           }}
         >
           All Around
