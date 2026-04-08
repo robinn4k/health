@@ -48,7 +48,7 @@ body::before {
   inset: 0;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   pointer-events: none;
-  z-index: 9999;
+  z-index: 2;
 }
 
 /* Ambient glow */
@@ -92,9 +92,10 @@ body::after {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 6px 8px;
+  padding: 10px 12px;
+  min-height: 44px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   outline: none;
@@ -122,9 +123,10 @@ body::after {
 .recipe-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 200;
   background: var(--bg);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: slideUpFull 0.35s cubic-bezier(0.4, 0, 0.15, 1);
 }
 
@@ -135,12 +137,13 @@ body::after {
 
 .recipe-search-input {
   width: 100%;
+  min-height: 48px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px 16px 12px 40px;
   font-family: 'Outfit', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;

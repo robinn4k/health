@@ -3,13 +3,17 @@ import MealCard from './MealCard';
 import SnackGrid from './SnackGrid';
 import MacroSummary from './MacroSummary';
 import DayToggle from './DayToggle';
+import WeightTracker from './WeightTracker';
+import { useLogout } from './AuthGate';
 
 export default function NutritionTab({
   isTraining, setIsTraining,
   selectedSnacks, setSelectedSnacks,
   openCards, setOpenCards,
   onReset,
+  weightLog, onSaveWeight, user,
 }) {
+  const logout = useLogout();
   const macros = isTraining ? MACROS_TRAIN : MACROS_REST;
 
   function toggleCard(id) {
@@ -44,7 +48,12 @@ export default function NutritionTab({
           Plan Nutricional
         </h1>
         <div className="flex gap-2 mt-3 flex-wrap animate-slide-up" style={{ animationDelay: '0.3s' }}>
-          {['77 kg', 'Prot 2.2 g/kg', '4–5 días/sem'].map(t => (
+          {(() => {
+            const entries = Object.entries(weightLog || {}).sort(([a], [b]) => a.localeCompare(b));
+            const latest = entries.length > 0 ? entries[entries.length - 1] : null;
+            const w = latest ? (typeof latest[1] === 'object' ? latest[1].value : latest[1]) : 77;
+            return [`${w} kg`, 'Prot 2.2 g/kg', '4–5 días/sem'];
+          })().map(t => (
             <span
               key={t}
               className="font-mono text-[10px] font-medium px-2.5 py-1 rounded-full border"
@@ -61,6 +70,9 @@ export default function NutritionTab({
           </span>
         </div>
       </div>
+
+      {/* Weight Tracker */}
+      <WeightTracker weightLog={weightLog} onSaveWeight={onSaveWeight} />
 
       {/* Day Toggle */}
       <DayToggle isTraining={isTraining} setIsTraining={setIsTraining} />
@@ -130,19 +142,40 @@ export default function NutritionTab({
 
       {/* Footer */}
       <div className="text-center pt-6 pb-4 mx-5 mt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+        {user && (
+          <div className="flex items-center justify-center gap-2 mb-3">
+            {user.photoURL && (
+              <img src={user.photoURL} alt="" className="w-6 h-6 rounded-full" referrerPolicy="no-referrer" />
+            )}
+            <span className="font-mono text-[10px]" style={{ color: 'var(--text2)' }}>
+              {user.displayName || user.email}
+            </span>
+          </div>
+        )}
         <p className="font-mono text-[9px] tracking-wider" style={{ color: 'var(--text3)' }}>
           Plan personalizado · <span style={{ color: 'var(--gold)', fontWeight: 600 }}>Robin M. Ober</span>
         </p>
         <p className="font-mono text-[9px] tracking-wider mt-1" style={{ color: 'var(--text3)' }}>
           Basado en analítica Marzo 2026 · Agave máx 1 cdta/día
         </p>
-        <button
-          onClick={onReset}
-          className="mt-2 font-mono text-[9px] tracking-wider px-4 py-1.5 rounded-full border transition-colors"
-          style={{ color: 'var(--text3)', borderColor: 'var(--border)' }}
-        >
-          RESETEAR DÍA
-        </button>
+        <div className="flex justify-center gap-3 mt-3">
+          <button
+            onClick={onReset}
+            className="font-mono text-[9px] tracking-wider px-4 py-1.5 rounded-full border transition-colors"
+            style={{ color: 'var(--text3)', borderColor: 'var(--border)' }}
+          >
+            RESETEAR DÍA
+          </button>
+          {user && (
+            <button
+              onClick={logout}
+              className="font-mono text-[9px] tracking-wider px-4 py-1.5 rounded-full border transition-colors"
+              style={{ color: 'var(--prot)', borderColor: 'rgba(251,113,133,0.2)' }}
+            >
+              CERRAR SESIÓN
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getLastWeight } from '../App';
 
-export default function ExerciseCard({ exercise, palette, index, sets, onUpdateSets, workoutLog, dayId }) {
+export default function ExerciseCard({ exercise, palette, index, sets, onUpdateSets, workoutLog, dayId, onStartTimer }) {
   const [isOpen, setIsOpen] = useState(false);
   const lastKg = getLastWeight(workoutLog, dayId, exercise.n);
 
@@ -11,14 +11,30 @@ export default function ExerciseCard({ exercise, palette, index, sets, onUpdateS
   const completedSets = currentSets.filter(s => s.done).length;
   const allDone = currentSets.length > 0 && completedSets === currentSets.length;
 
+  // 1RM calculation (Epley formula) — only for non-time-based exercises
+  const isTimeBased = /\d+s/.test(exercise.reps);
+  const best1RM = (() => {
+    if (isTimeBased) return null;
+    const doneSets = currentSets.filter(s => s.done && s.kg > 0 && s.reps > 0);
+    if (doneSets.length === 0) return null;
+    let max1RM = 0;
+    for (const s of doneSets) {
+      const rm = parseFloat(s.kg) * (1 + parseFloat(s.reps) / 30);
+      if (rm > max1RM) max1RM = rm;
+    }
+    return Math.round(max1RM);
+  })();
+
   function updateSet(idx, field, value) {
     const next = currentSets.map((s, i) => i === idx ? { ...s, [field]: value } : s);
     onUpdateSets(exercise.n, next);
   }
 
   function toggleDone(idx) {
+    const wasNotDone = !currentSets[idx].done;
     const next = currentSets.map((s, i) => i === idx ? { ...s, done: !s.done } : s);
     onUpdateSets(exercise.n, next);
+    if (wasNotDone && onStartTimer) onStartTimer();
   }
 
   function addSet() {
@@ -112,19 +128,29 @@ export default function ExerciseCard({ exercise, palette, index, sets, onUpdateS
           {/* Reference */}
           {lastKg && (
             <div
-              className="flex items-center gap-1.5 text-[10.5px] px-3 py-1.5 rounded-lg mb-3 font-mono tracking-wide border-l-2"
+              className="flex items-center justify-between text-[10.5px] px-3 py-1.5 rounded-lg mb-3 font-mono tracking-wide border-l-2"
               style={{ color: 'var(--text2)', background: palette.glow, borderLeftColor: palette.accent }}
             >
-              Último peso: {lastKg} kg · Objetivo: {exercise.reps} reps
+              <span>Último peso: {lastKg} kg · Objetivo: {exercise.reps} reps</span>
+              {best1RM && (
+                <span className="font-bold px-2 py-0.5 rounded-full text-[9px]" style={{ color: palette.accent, background: palette.bg }}>
+                  1RM ~{best1RM} kg
+                </span>
+              )}
             </div>
           )}
 
           {!lastKg && (
             <div
-              className="flex items-center gap-1.5 text-[10.5px] px-3 py-1.5 rounded-lg mb-3 font-mono tracking-wide border-l-2"
+              className="flex items-center justify-between text-[10.5px] px-3 py-1.5 rounded-lg mb-3 font-mono tracking-wide border-l-2"
               style={{ color: 'var(--text3)', background: 'rgba(255,255,255,0.02)', borderLeftColor: 'var(--border)' }}
             >
-              Objetivo: {exercise.reps} reps · Primera vez
+              <span>Objetivo: {exercise.reps} reps · Primera vez</span>
+              {best1RM && (
+                <span className="font-bold px-2 py-0.5 rounded-full text-[9px]" style={{ color: palette.accent, background: palette.bg }}>
+                  1RM ~{best1RM} kg
+                </span>
+              )}
             </div>
           )}
 

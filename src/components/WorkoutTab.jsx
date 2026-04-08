@@ -1,12 +1,17 @@
+import { useState, useEffect } from 'react';
 import { workoutDays } from '../data/workout';
 import ExerciseCard from './ExerciseCard';
+import ProgressView from './ProgressView';
 
 const dayColors = {
   gold: { accent: 'var(--gold)', bg: 'var(--gold-dim)', glow: 'var(--gold-glow)', border: 'var(--border-gold)' },
   cyan: { accent: 'var(--cyan)', bg: 'var(--cyan-bg)', glow: 'rgba(34,211,238,0.06)', border: 'rgba(34,211,238,0.2)' },
 };
 
-export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, updateExerciseSets, onReset }) {
+export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, todayEntry, updateExerciseSets, onReset, onStartTimer }) {
+  const [showProgress, setShowProgress] = useState(false);
+  const [elapsed, setElapsed] = useState(null);
+
   const day = workoutDays.find(d => d.id === activeDay);
   const palette = dayColors[day.color];
 
@@ -14,6 +19,29 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
     const sets = todaySets[ex.n];
     return sets && sets.length > 0 && sets.every(s => s.done);
   }).length;
+
+  const allComplete = completedCount === day.exercises.length && completedCount > 0;
+
+  // Live duration timer
+  useEffect(() => {
+    if (!todayEntry?.startedAt) { setElapsed(null); return; }
+    if (allComplete && todayEntry?.endedAt) {
+      setElapsed(todayEntry.endedAt - todayEntry.startedAt);
+      return;
+    }
+    const tick = () => setElapsed(Date.now() - todayEntry.startedAt);
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [todayEntry?.startedAt, todayEntry?.endedAt, allComplete]);
+
+  function formatElapsed(ms) {
+    if (!ms) return null;
+    const totalSec = Math.floor(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
 
   return (
     <div>
@@ -75,18 +103,34 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
         </div>
       </div>
 
-      {/* Subtitle */}
+      {/* Subtitle + duration */}
       <div
         className="mx-5 mb-4 px-4 py-2.5 rounded-xl font-mono text-[11px] font-medium tracking-wide flex items-center gap-2 border"
         style={{ background: palette.glow, color: palette.accent, borderColor: palette.border }}
       >
         <span>{day.subtitle}</span>
-        <span className="ml-auto font-bold">
+        <span className="ml-auto flex items-center gap-2.5 font-bold">
+          {elapsed !== null && (
+            <span style={{ color: allComplete ? 'var(--green)' : 'var(--text2)' }}>
+              ⏱ {formatElapsed(elapsed)}
+            </span>
+          )}
           {completedCount > 0 && (
             <span style={{ color: 'var(--green)' }}>{completedCount}/</span>
           )}
-          {day.exercises.length} ejercicios
+          {day.exercises.length}
         </span>
+      </div>
+
+      {/* Progress button */}
+      <div className="mx-5 mb-4">
+        <button
+          onClick={() => setShowProgress(true)}
+          className="w-full py-2.5 rounded-xl border font-mono text-[10px] font-semibold tracking-wider transition-all"
+          style={{ color: palette.accent, borderColor: palette.border, background: palette.glow }}
+        >
+          📈 PROGRESO
+        </button>
       </div>
 
       {/* Exercises */}
@@ -101,6 +145,7 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
             onUpdateSets={updateExerciseSets}
             workoutLog={workoutLog}
             dayId={activeDay}
+            onStartTimer={onStartTimer}
           />
         ))}
       </div>
@@ -120,6 +165,14 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
           </button>
         )}
       </div>
+
+      {/* Progress Overlay */}
+      {showProgress && (
+        <ProgressView
+          workoutLog={workoutLog}
+          onClose={() => setShowProgress(false)}
+        />
+      )}
     </div>
   );
 }
