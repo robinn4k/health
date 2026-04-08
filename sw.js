@@ -1,8 +1,8 @@
 const CACHE_NAME = 'plan-fitness-v2';
 
 const PRECACHE = [
-  '/health/',
-  '/health/index.html',
+  '/plan-fitness/',
+  '/plan-fitness/index.html',
 ];
 
 // Install: cache shell
