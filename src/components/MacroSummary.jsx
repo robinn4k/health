@@ -1,8 +1,8 @@
 export default function MacroSummary({ macros }) {
   const items = [
     { key: 'kcal', val: macros.kcal, label: 'kcal', color: 'var(--gold)' },
-    { key: 'carb', val: macros.carb, label: 'carbos', color: 'var(--carb)' },
-    { key: 'prot', val: macros.prot, label: 'prote', color: 'var(--prot)' },
+    { key: 'carb', val: macros.carb, label: 'carbo.', color: 'var(--carb)' },
+    { key: 'prot', val: macros.prot, label: 'proteína', color: 'var(--prot)' },
     { key: 'fat', val: macros.fat, label: 'grasas', color: 'var(--fat)' },
   ];
 

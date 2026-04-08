@@ -27,10 +27,10 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
           className="font-mono text-[10px] font-semibold tracking-[4px] uppercase animate-slide-up"
           style={{ color: palette.accent, animationDelay: '0.1s' }}
         >
-          Push & Pull
+          Entrenamiento
         </p>
         <h1
-          className="font-display text-[34px] font-extrabold leading-tight mt-1 animate-slide-up"
+          className="font-display text-[32px] font-extrabold leading-tight mt-1 animate-slide-up"
           style={{
             background: `linear-gradient(135deg, var(--text) 60%, ${palette.titleAccent} 140%)`,
             WebkitBackgroundClip: 'text',
@@ -38,7 +38,7 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
             animationDelay: '0.2s',
           }}
         >
-          All Around
+          Mi Entreno
         </h1>
       </div>
 
@@ -109,7 +109,7 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
       {/* Footer */}
       <div className="text-center py-8 px-5">
         <p className="font-mono text-[10px] tracking-wider" style={{ color: 'var(--text3)' }}>
-          ¡A entrenar! — <span style={{ color: palette.accent, fontWeight: 600 }}>Push & Pull All Around</span>
+          ¡A entrenar! — <span style={{ color: palette.accent, fontWeight: 600 }}>{day.name}</span>
         </p>
         {Object.keys(todaySets).length > 0 && (
           <button

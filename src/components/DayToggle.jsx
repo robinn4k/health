@@ -30,7 +30,7 @@ export default function DayToggle({ isTraining, setIsTraining }) {
             className="flex-1 text-center py-3 font-mono text-[11px] font-semibold tracking-wider rounded-[11px] relative z-[2] transition-colors duration-300"
             style={{ color: !isTraining ? 'var(--bg)' : 'var(--text3)' }}
           >
-            🛌 DESCANSO
+            🌙 DESCANSO
           </button>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function DayToggle({ isTraining, setIsTraining }) {
           borderColor: isTraining ? 'rgba(212,175,55,0.1)' : 'rgba(167,139,250,0.1)',
         }}
       >
-        <span>{isTraining ? '⚡ Todas las comidas + 2 snacks' : '🛌 Sin snack C ni pre-sueño (−400 kcal)'}</span>
+        <span>{isTraining ? '⚡ Todas las comidas + 2 snacks' : '🌙 Sin snack C ni pre-sueño (−400 kcal)'}</span>
         <span className="ml-auto font-bold text-xs">
           {isTraining ? '2 700 kcal' : '2 300 kcal'}
         </span>
