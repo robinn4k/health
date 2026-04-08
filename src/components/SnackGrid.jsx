@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { snackOptions } from '../data/meals';
 
-export default function SnackGrid({ meal, isTraining, selectedSnacks, setSelectedSnacks, isOpen, onToggle, index }) {
+export default function SnackGrid({ meal, isTraining, selectedSnacks, setSelectedSnacks, isOpen, onToggle, note, onNoteChange, index }) {
+  const [showNote, setShowNote] = useState(false);
+
   function handleSelect(id) {
     if (!isTraining && snackOptions.find(s => s.id === id)?.disableOnRest) return;
 
@@ -34,6 +37,9 @@ export default function SnackGrid({ meal, isTraining, selectedSnacks, setSelecte
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {note && !isOpen && (
+            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--gold)' }} />
+          )}
           <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded-full" style={{ color: 'var(--gold)', background: 'var(--gold-dim)' }}>
             ~450
           </span>
@@ -74,6 +80,35 @@ export default function SnackGrid({ meal, isTraining, selectedSnacks, setSelecte
               Toca 2 para marcar tus snacks del día
             </div>
           </div>
+
+          {/* Note */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowNote(!showNote); }}
+            className="w-full mt-3 py-2 rounded-xl border font-mono text-[11px] font-medium tracking-wider transition-all duration-200 flex items-center justify-center gap-2 min-h-[40px]"
+            style={{
+              color: note ? 'var(--gold)' : 'var(--text3)',
+              borderColor: note ? 'var(--border-gold)' : 'var(--border)',
+              background: note ? 'var(--gold-glow)' : 'transparent',
+            }}
+          >
+            ✏️ {note ? 'NOTA' : 'AÑADIR NOTA'}
+          </button>
+          {showNote && (
+            <textarea
+              value={note}
+              onChange={(e) => onNoteChange(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              placeholder="Escribe una nota..."
+              rows={2}
+              className="w-full mt-2 px-3.5 py-3 rounded-xl border text-[13px] leading-relaxed resize-none outline-none transition-colors duration-200"
+              style={{
+                background: 'var(--card)',
+                borderColor: 'var(--border-gold)',
+                color: 'var(--text)',
+                fontFamily: 'Outfit, sans-serif',
+              }}
+            />
+          )}
 
           <div className="flex gap-3 mt-3.5 px-3.5 py-2.5 rounded-xl border" style={{ background: 'rgba(255,255,255,0.015)', borderColor: 'var(--border)' }}>
             <span className="flex items-center gap-1.5 font-mono text-[11px] font-medium">

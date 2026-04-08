@@ -6,7 +6,7 @@ const dayColors = {
   cyan: { accent: 'var(--cyan)', titleAccent: '#7ECFDB', bg: 'var(--cyan-bg)', glow: 'rgba(34,211,238,0.06)', border: 'rgba(34,211,238,0.2)' },
 };
 
-export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, updateExerciseSets, onReset }) {
+export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, updateExerciseSets, notes, updateNote, onReset }) {
   const day = workoutDays.find(d => d.id === activeDay);
   const palette = dayColors[day.color];
 
@@ -102,6 +102,8 @@ export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todayS
             onUpdateSets={updateExerciseSets}
             workoutLog={workoutLog}
             dayId={activeDay}
+            note={notes[`ex_${activeDay}_${ex.n}`] || ''}
+            onNoteChange={(text) => updateNote(`ex_${activeDay}_${ex.n}`, text)}
           />
         ))}
       </div>

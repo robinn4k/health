@@ -8,6 +8,7 @@ export default function NutritionTab({
   isTraining, setIsTraining,
   selectedSnacks, setSelectedSnacks,
   openCards, setOpenCards,
+  notes, updateNote,
   onReset,
 }) {
   const macros = isTraining ? MACROS_TRAIN : MACROS_REST;
@@ -75,6 +76,8 @@ export default function NutritionTab({
                 setSelectedSnacks={setSelectedSnacks}
                 isOpen={openCards.includes(meal.id)}
                 onToggle={() => toggleCard(meal.id)}
+                note={notes[`meal_${meal.id}`] || ''}
+                onNoteChange={(text) => updateNote(`meal_${meal.id}`, text)}
                 index={i}
               />
             );
@@ -86,6 +89,8 @@ export default function NutritionTab({
               isTraining={isTraining}
               isOpen={openCards.includes(meal.id)}
               onToggle={() => toggleCard(meal.id)}
+              note={notes[`meal_${meal.id}`] || ''}
+              onNoteChange={(text) => updateNote(`meal_${meal.id}`, text)}
               index={i}
             />
           );
