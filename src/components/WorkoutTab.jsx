@@ -1,15 +1,19 @@
-import { useState } from 'react';
 import { workoutDays } from '../data/workout';
+import ExerciseCard from './ExerciseCard';
 
 const dayColors = {
   gold: { accent: 'var(--gold)', bg: 'var(--gold-dim)', glow: 'var(--gold-glow)', border: 'var(--border-gold)' },
   cyan: { accent: 'var(--cyan)', bg: 'var(--cyan-bg)', glow: 'rgba(34,211,238,0.06)', border: 'rgba(34,211,238,0.2)' },
 };
 
-export default function WorkoutTab() {
-  const [activeDay, setActiveDay] = useState('push');
+export default function WorkoutTab({ activeDay, setActiveDay, workoutLog, todaySets, updateExerciseSets, onReset }) {
   const day = workoutDays.find(d => d.id === activeDay);
   const palette = dayColors[day.color];
+
+  const completedCount = day.exercises.filter(ex => {
+    const sets = todaySets[ex.n];
+    return sets && sets.length > 0 && sets.every(s => s.done);
+  }).length;
 
   return (
     <div>
@@ -77,52 +81,27 @@ export default function WorkoutTab() {
         style={{ background: palette.glow, color: palette.accent, borderColor: palette.border }}
       >
         <span>{day.subtitle}</span>
-        <span className="ml-auto font-bold">{day.exercises.length} ejercicios</span>
+        <span className="ml-auto font-bold">
+          {completedCount > 0 && (
+            <span style={{ color: 'var(--green)' }}>{completedCount}/</span>
+          )}
+          {day.exercises.length} ejercicios
+        </span>
       </div>
 
       {/* Exercises */}
       <div className="px-3 flex flex-col gap-2">
         {day.exercises.map((ex, i) => (
-          <div
-            key={ex.n}
-            className="rounded-2xl border px-4 py-3 animate-slide-up"
-            style={{
-              background: 'var(--card)',
-              borderColor: 'var(--border)',
-              animationDelay: `${i * 0.03}s`,
-            }}
-          >
-            <div className="flex items-start gap-3">
-              {/* Number */}
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs font-bold shrink-0"
-                style={{ background: palette.bg, color: palette.accent }}
-              >
-                {ex.n}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                {/* Block label */}
-                <p className="font-mono text-[9px] font-semibold tracking-[1.5px] uppercase" style={{ color: palette.accent }}>
-                  {ex.block}
-                </p>
-                {/* Exercise name */}
-                <h4 className="text-[14px] font-semibold mt-0.5 leading-snug">
-                  {ex.name}
-                </h4>
-                {/* Detail */}
-                {ex.detail && (
-                  <p className="font-mono text-[10px] mt-0.5" style={{ color: 'var(--text3)' }}>
-                    {ex.detail}
-                  </p>
-                )}
-                {/* Target */}
-                <p className="text-[11px] mt-1" style={{ color: 'var(--text2)' }}>
-                  → {ex.target}
-                </p>
-              </div>
-            </div>
-          </div>
+          <ExerciseCard
+            key={`${activeDay}-${ex.n}`}
+            exercise={ex}
+            palette={palette}
+            index={i}
+            sets={todaySets[ex.n]}
+            onUpdateSets={updateExerciseSets}
+            workoutLog={workoutLog}
+            dayId={activeDay}
+          />
         ))}
       </div>
 
@@ -131,6 +110,15 @@ export default function WorkoutTab() {
         <p className="font-mono text-[10px] tracking-wider" style={{ color: 'var(--text3)' }}>
           ¡A entrenar! — <span style={{ color: palette.accent, fontWeight: 600 }}>Push & Pull All Around</span>
         </p>
+        {Object.keys(todaySets).length > 0 && (
+          <button
+            onClick={onReset}
+            className="mt-2 font-mono text-[9px] tracking-wider px-4 py-1.5 rounded-full border transition-colors"
+            style={{ color: 'var(--text3)', borderColor: 'var(--border)' }}
+          >
+            RESETEAR SESIÓN
+          </button>
+        )}
       </div>
     </div>
   );
