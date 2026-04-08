@@ -4,5 +4,5 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/plan-fitness/', // Para GitHub Pages
+  base: '/health/', // Para GitHub Pages (debe coincidir con el nombre del repo)
 })
