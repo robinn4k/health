@@ -7,21 +7,21 @@ export default function MacroSummary({ macros }) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2.5 px-5 py-3">
+    <div className="grid grid-cols-4 gap-2 px-4 py-3">
       {items.map(item => (
         <div
           key={item.key}
-          className="text-center py-3 px-1.5 rounded-xl border relative overflow-hidden"
+          className="text-center py-3 px-1 rounded-xl border relative overflow-hidden"
           style={{ background: 'var(--card)', borderColor: 'var(--border)' }}
         >
           <div
-            className="font-mono text-xl font-bold leading-none transition-all duration-300"
+            className="font-mono text-lg sm:text-xl font-bold leading-none transition-all duration-300"
             style={{ color: item.color }}
           >
             {item.val}
           </div>
           <span
-            className="text-[9px] uppercase tracking-[1.5px] mt-1.5 block font-medium"
+            className="text-[10px] uppercase tracking-[1px] mt-1.5 block font-medium"
             style={{ color: 'var(--text3)' }}
           >
             {item.label}

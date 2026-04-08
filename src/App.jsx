@@ -116,7 +116,7 @@ export default function App() {
   }
 
   return (
-    <div className="relative z-[1] max-w-[430px] mx-auto min-h-dvh flex flex-col safe-top">
+    <div className="relative z-[1] w-full max-w-[640px] mx-auto min-h-dvh flex flex-col safe-top">
       {/* Content */}
       <div className="flex-1 pb-24">
         {tab === 'nutrition' ? (
@@ -143,7 +143,7 @@ export default function App() {
 
       {/* Bottom Nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
-        <div className="max-w-[430px] mx-auto">
+        <div className="max-w-[640px] mx-auto">
           <div
             className="flex mx-3 mb-2 rounded-2xl border overflow-hidden backdrop-blur-xl"
             style={{
