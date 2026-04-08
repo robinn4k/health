@@ -3,6 +3,7 @@ import NutritionTab from './components/NutritionTab';
 import WorkoutTab from './components/WorkoutTab';
 
 const STORAGE_KEY = 'plan_fitness_v1';
+const WORKOUT_LOG_KEY = 'workout_log';
 
 function getToday() {
   return new Date().toDateString();
@@ -25,11 +26,40 @@ function saveState(state) {
   } catch {}
 }
 
+function loadWorkoutLog() {
+  try {
+    const raw = localStorage.getItem(WORKOUT_LOG_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+}
+
+function saveWorkoutLog(log) {
+  try {
+    localStorage.setItem(WORKOUT_LOG_KEY, JSON.stringify(log));
+  } catch {}
+}
+
+export function getLastWeight(log, dayId, exerciseN) {
+  const dates = Object.keys(log).sort().reverse();
+  for (const date of dates) {
+    const entry = log[date];
+    if (entry.day === dayId && entry.exercises[exerciseN]) {
+      const sets = entry.exercises[exerciseN];
+      const lastWithKg = sets.find(s => s.kg > 0);
+      if (lastWithKg) return lastWithKg.kg;
+    }
+  }
+  return null;
+}
+
 export default function App() {
   const [tab, setTab] = useState('nutrition');
   const [isTraining, setIsTraining] = useState(true);
   const [selectedSnacks, setSelectedSnacks] = useState([]);
   const [openCards, setOpenCards] = useState([]);
+  const [activeDay, setActiveDay] = useState('push');
+  const [workoutLog, setWorkoutLog] = useState({});
 
   // Load on mount
   useEffect(() => {
@@ -38,19 +68,51 @@ export default function App() {
       setIsTraining(saved.isTraining ?? true);
       setSelectedSnacks(saved.selectedSnacks ?? []);
       setOpenCards(saved.openCards ?? []);
+      setActiveDay(saved.activeDay ?? 'push');
     }
+    setWorkoutLog(loadWorkoutLog());
   }, []);
 
-  // Save on change
+  // Save daily state on change
   useEffect(() => {
-    saveState({ isTraining, selectedSnacks, openCards });
-  }, [isTraining, selectedSnacks, openCards]);
+    saveState({ isTraining, selectedSnacks, openCards, activeDay });
+  }, [isTraining, selectedSnacks, openCards, activeDay]);
+
+  // Save workout log on change
+  useEffect(() => {
+    if (Object.keys(workoutLog).length > 0) {
+      saveWorkoutLog(workoutLog);
+    }
+  }, [workoutLog]);
 
   function handleReset() {
     setIsTraining(true);
     setSelectedSnacks([]);
     setOpenCards([]);
     localStorage.removeItem(STORAGE_KEY);
+  }
+
+  function handleWorkoutReset() {
+    const today = getToday();
+    setWorkoutLog(prev => {
+      const next = { ...prev };
+      delete next[today];
+      return next;
+    });
+  }
+
+  function updateExerciseSets(exerciseN, sets) {
+    const today = getToday();
+    setWorkoutLog(prev => ({
+      ...prev,
+      [today]: {
+        day: activeDay,
+        exercises: {
+          ...(prev[today]?.exercises || {}),
+          [exerciseN]: sets,
+        },
+      },
+    }));
   }
 
   return (
@@ -68,7 +130,14 @@ export default function App() {
             onReset={handleReset}
           />
         ) : (
-          <WorkoutTab />
+          <WorkoutTab
+            activeDay={activeDay}
+            setActiveDay={setActiveDay}
+            workoutLog={workoutLog}
+            todaySets={workoutLog[getToday()]?.exercises || {}}
+            updateExerciseSets={updateExerciseSets}
+            onReset={handleWorkoutReset}
+          />
         )}
       </div>
 

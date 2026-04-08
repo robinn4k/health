@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import RecipeSearch from './RecipeSearch';
 
 const typeColors = {
   carb: 'var(--carb)',
@@ -16,6 +17,7 @@ const iconBgs = {
 
 export default function MealCard({ meal, isTraining, isOpen, onToggle, index }) {
   const [optIdx, setOptIdx] = useState(0);
+  const [showRecipes, setShowRecipes] = useState(false);
   const isDimmed = meal.hideOnRest && !isTraining;
 
   return (
@@ -139,6 +141,15 @@ export default function MealCard({ meal, isTraining, isOpen, onToggle, index }) 
             </>
           )}
 
+          {/* Search recipes button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowRecipes(true); }}
+            className="w-full mt-3 py-2.5 rounded-xl border font-mono text-[11px] font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-2"
+            style={{ color: 'var(--gold)', borderColor: 'var(--border-gold)', background: 'var(--gold-glow)' }}
+          >
+            🔍 BUSCAR RECETAS
+          </button>
+
           {/* Macro mini bar */}
           <div
             className="flex gap-3 mt-3.5 px-3.5 py-2.5 rounded-xl border"
@@ -156,6 +167,11 @@ export default function MealCard({ meal, isTraining, isOpen, onToggle, index }) 
           </div>
         </div>
       </div>
+
+      {/* Recipe Search Overlay */}
+      {showRecipes && (
+        <RecipeSearch mealType={meal.id} onClose={() => setShowRecipes(false)} />
+      )}
     </div>
   );
 }

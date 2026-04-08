@@ -87,6 +87,74 @@ body::after {
   animation: fadeIn 0.3s ease backwards;
 }
 
+/* Exercise inputs */
+.exercise-input {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+}
+
+.exercise-input::-webkit-inner-spin-button,
+.exercise-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.exercise-input:focus {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 0 2px var(--gold-glow);
+}
+
+.exercise-input::placeholder {
+  color: var(--text3);
+  font-weight: 400;
+}
+
+/* Recipe search overlay */
+.recipe-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  overflow-y: auto;
+  animation: slideUpFull 0.35s cubic-bezier(0.4, 0, 0.15, 1);
+}
+
+@keyframes slideUpFull {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.recipe-search-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px 12px 40px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.recipe-search-input:focus {
+  border-color: var(--border-gold);
+  box-shadow: 0 0 0 2px var(--gold-glow);
+}
+
+.recipe-search-input::placeholder {
+  color: var(--text3);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 0; }
 
