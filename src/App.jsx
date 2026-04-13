@@ -113,10 +113,10 @@ export default function App() {
   }
 
   function handleWorkoutReset() {
-    const today = getToday();
+    const key = getToday() + '_' + activeDay;
     setWorkoutLog(prev => {
       const next = { ...prev };
-      delete next[today];
+      delete next[key];
       return next;
     });
   }
@@ -133,13 +133,13 @@ export default function App() {
   }
 
   function updateExerciseSets(exerciseN, sets) {
-    const today = getToday();
+    const key = getToday() + '_' + activeDay;
     setWorkoutLog(prev => ({
       ...prev,
-      [today]: {
+      [key]: {
         day: activeDay,
         exercises: {
-          ...(prev[today]?.exercises || {}),
+          ...(prev[key]?.exercises || {}),
           [exerciseN]: sets,
         },
       },
@@ -167,7 +167,7 @@ export default function App() {
             activeDay={activeDay}
             setActiveDay={setActiveDay}
             workoutLog={workoutLog}
-            todaySets={workoutLog[getToday()]?.exercises || {}}
+            todaySets={workoutLog[getToday() + '_' + activeDay]?.exercises || {}}
             updateExerciseSets={updateExerciseSets}
             notes={notes}
             updateNote={updateNote}
