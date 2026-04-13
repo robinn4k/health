@@ -30,7 +30,20 @@ function saveState(state) {
 function loadWorkoutLog() {
   try {
     const raw = localStorage.getItem(WORKOUT_LOG_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const log = JSON.parse(raw);
+      // Migrate: remove old-format entries (corrupt mixed push/pull data)
+      const migrated = {};
+      for (const [key, entry] of Object.entries(log)) {
+        if (key.includes('_')) {
+          migrated[key] = entry;
+        }
+      }
+      if (Object.keys(migrated).length !== Object.keys(log).length) {
+        localStorage.setItem(WORKOUT_LOG_KEY, JSON.stringify(migrated));
+      }
+      return migrated;
+    }
   } catch {}
   return {};
 }
