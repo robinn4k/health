@@ -97,16 +97,12 @@ export default function App() {
 
   // Save workout log on change
   useEffect(() => {
-    if (Object.keys(workoutLog).length > 0) {
-      saveWorkoutLog(workoutLog);
-    }
+    saveWorkoutLog(workoutLog);
   }, [workoutLog]);
 
   // Save notes on change
   useEffect(() => {
-    if (Object.keys(notes).length > 0) {
-      saveNotes(notes);
-    }
+    saveNotes(notes);
   }, [notes]);
 
   function handleReset() {
